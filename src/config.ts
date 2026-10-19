@@ -230,8 +230,15 @@ export function buildClaudeSettings(config: GatewayConfig, port = config.port): 
     env: {
       ANTHROPIC_BASE_URL: `http://${config.host}:${port}`,
       ANTHROPIC_AUTH_TOKEN: config.localToken,
-      ANTHROPIC_MODEL: config.models.opus,
+      // Intentionally empty: this shadows a model pin from the user's global
+      // settings (often another provider), while Claude Code treats an empty
+      // value as unset. The session then follows the `/model` selection, so
+      // the model picker and status line stay consistent.
+      ANTHROPIC_MODEL: "",
       ANTHROPIC_CUSTOM_MODEL_OPTION: config.models.opus,
+      // Let the /model picker list every model the gateway serves, so users can
+      // switch between them without hand-editing settings.
+      CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY: "1",
       ANTHROPIC_DEFAULT_OPUS_MODEL: config.models.opus,
       ANTHROPIC_DEFAULT_SONNET_MODEL: config.models.sonnet,
       ANTHROPIC_DEFAULT_HAIKU_MODEL: config.models.haiku,

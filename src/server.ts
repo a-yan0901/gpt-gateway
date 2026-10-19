@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import http from "node:http";
 import type { AddressInfo } from "node:net";
-import { GatewayConfig, accountInfo, loadConfig } from "./config";
+import { GatewayConfig, accountInfo, displayName, loadConfig } from "./config";
 import { TokenManager } from "./auth/token-manager";
 import { ReauthRequiredError } from "./auth/oauth";
 import { UpstreamError, isAbortError, postResponses } from "./upstream/codex-client";
@@ -283,16 +283,20 @@ async function handleRequest(
     }
 
     if (method === "GET" && path === "/v1/models") {
+      const ids = [...new Set([config.models.opus, config.models.sonnet, config.models.haiku, config.models.fable])]
+        .filter(Boolean);
       sendJson(res, 200, {
         object: "list",
-        data: [config.models.opus, config.models.sonnet, config.models.haiku, config.models.fable]
-          .filter(Boolean)
-          .map((id) => ({
+        data: ids.map((id) => ({
           id,
           object: "model",
           type: "model",
-          display_name: id,
+          display_name: displayName(id),
+          created_at: "2025-01-01T00:00:00Z",
         })),
+        has_more: false,
+        first_id: ids[0] ?? null,
+        last_id: ids[ids.length - 1] ?? null,
       });
       finishLog(200);
       return;

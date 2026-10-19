@@ -321,8 +321,15 @@ function buildClaudeSettings(config, port = config.port) {
     env: {
       ANTHROPIC_BASE_URL: `http://${config.host}:${port}`,
       ANTHROPIC_AUTH_TOKEN: config.localToken,
-      ANTHROPIC_MODEL: config.models.opus,
+      // Intentionally empty: this shadows a model pin from the user's global
+      // settings (often another provider), while Claude Code treats an empty
+      // value as unset. The session then follows the `/model` selection, so
+      // the model picker and status line stay consistent.
+      ANTHROPIC_MODEL: "",
       ANTHROPIC_CUSTOM_MODEL_OPTION: config.models.opus,
+      // Let the /model picker list every model the gateway serves, so users can
+      // switch between them without hand-editing settings.
+      CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY: "1",
       ANTHROPIC_DEFAULT_OPUS_MODEL: config.models.opus,
       ANTHROPIC_DEFAULT_SONNET_MODEL: config.models.sonnet,
       ANTHROPIC_DEFAULT_HAIKU_MODEL: config.models.haiku,
@@ -1675,14 +1682,19 @@ async function handleRequest(req, res, config, tokens) {
       return;
     }
     if (method === "GET" && path4 === "/v1/models") {
+      const ids = [.../* @__PURE__ */ new Set([config.models.opus, config.models.sonnet, config.models.haiku, config.models.fable])].filter(Boolean);
       sendJson(res, 200, {
         object: "list",
-        data: [config.models.opus, config.models.sonnet, config.models.haiku, config.models.fable].filter(Boolean).map((id) => ({
+        data: ids.map((id) => ({
           id,
           object: "model",
           type: "model",
-          display_name: id
-        }))
+          display_name: displayName(id),
+          created_at: "2025-01-01T00:00:00Z"
+        })),
+        has_more: false,
+        first_id: ids[0] ?? null,
+        last_id: ids[ids.length - 1] ?? null
       });
       finishLog(200);
       return;

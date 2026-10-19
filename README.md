@@ -97,6 +97,11 @@ gpt-gateway claude -p "解释这个仓库" --output-format text
 这样不会污染全局 `~/.claude/settings.json`，也不会继承父进程里可能存在的
 `ANTHROPIC_MODEL` / `ANTHROPIC_BASE_URL`。
 
+临时 settings 里的 `ANTHROPIC_MODEL` 被显式设为空字符串。Claude Code 把空值当作“未设置”，
+因此它会遵循 `/model` 的选择（以及用户 settings 里保存的 `model`），模型选择器、
+状态栏和实际请求保持一致。网关只通过 `ANTHROPIC_DEFAULT_*_MODEL` 决定
+`opus` / `sonnet` / `haiku` / `fable` 各对应哪个 GPT 模型。
+
 ### 其他命令
 
 ```bash
@@ -118,6 +123,10 @@ gpt-gateway doctor --live   # 自检并发一条真实请求
 | sonnet | `gpt-6.1-sol` |
 | haiku | `gpt-6-luna` |
 | fable | `gpt-6-astra` |
+
+会话内用 `/model` 切换层级即可；wrapper 启用了网关模型发现
+（`CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY=1`），所以 `/model` 列表里也能直接选
+`gpt-6.1-sol` / `gpt-6-luna` / `gpt-6-astra`。用 `/model` 保存的默认值对下次启动同样生效。
 
 修改 `~/.gpt-gateway/config.json` 的 `models` 字段，或用环境变量：
 
@@ -194,7 +203,15 @@ Claude Code 会把当前强度放在请求的 `output_config.effort` 字段里�
 **`The '<model>' model is not supported when using Codex with a ChatGPT account`**
 
 请求里的模型名不是你的套餐可用的 GPT 模型。检查 `gpt-gateway models` 与配置。
-如果使用 `gpt-gateway claude`，wrapper 会覆盖继承来的 `ANTHROPIC_MODEL`。
+如果使用 `gpt-gateway claude`，wrapper 会清空继承来的 `ANTHROPIC_MODEL`；
+但用户 settings 里保存的 `model` 仍会生效，换成任一 `gpt-6-*` 模型或 Claude 层级即可。
+
+**`/model` 切换到 luna 后，状态栏仍显示 sol**
+
+旧版 wrapper 会把 `ANTHROPIC_MODEL` 固定为 `gpt-6.1-sol`，它优先级高于 `/model`
+保存的默认值，因此状态栏和下次启动都会回到 sol。现在改为空字符串（视为未设置），
+重新启动一次 `gpt-gateway claude` 后即可正常切换。状态栏本身只在下一条助手消息等
+时机刷新，执行 `/model` 后需要发一条消息才会更新。
 
 **自定义 endpoint 被 Claude Code 安全策略拦截**
 
