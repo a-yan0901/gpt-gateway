@@ -1,0 +1,12 @@
+node_modules/
+dist/
+*.log
+*.tmp
+.gpt-gateway-test/
+.gpt-gateway/
+run/
+coverage/
+.env
+.env.*
+.DS_Store
+.omc/

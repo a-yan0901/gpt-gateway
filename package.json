@@ -1,0 +1,25 @@
+{
+  "name": "gpt-gateway",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Anthropic Messages API gateway backed by a ChatGPT subscription (Codex Responses API)",
+  "type": "module",
+  "bin": {
+    "gpt-gateway": "dist/cli.js"
+  },
+  "scripts": {
+    "dev": "tsx src/cli.ts",
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test test/*.test.ts"
+  },
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsup": "^8.5.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
+}
