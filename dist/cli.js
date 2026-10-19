@@ -1099,8 +1099,7 @@ function convertToolChoice(choice) {
 function mapReasoning(request, config) {
   const level = request.output_config?.effort;
   if (level && level !== "auto") {
-    if (level === "max") return { effort: "xhigh", summary: "auto" };
-    if (level === "low" || level === "medium" || level === "high" || level === "xhigh") {
+    if (level === "low" || level === "medium" || level === "high" || level === "xhigh" || level === "max") {
       return { effort: level, summary: "auto" };
     }
   }

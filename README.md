@@ -156,8 +156,7 @@ Claude Code 会把当前强度放在请求的 `output_config.effort` 字段里�
 
 | Claude Code effort | 上游 `reasoning.effort` |
 |---|---|
-| `low` / `medium` / `high` / `xhigh` | 原样透传 |
-| `max` | `xhigh`（上游不支持 `max`） |
+| `low` / `medium` / `high` / `xhigh` / `max` | 原样透传 |
 | `auto`（未显式设置） | 回退到 `thinking.budget_tokens` 映射或配置值 |
 
 可用 `GPT_GATEWAY_REASONING_EFFORT=high` 设置一个固定默认值。

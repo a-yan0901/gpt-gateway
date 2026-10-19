@@ -224,11 +224,11 @@ function mapReasoning(
   config: GatewayConfig,
 ): { effort: string; summary: string } | undefined {
   // Claude Code's /effort and --effort send the explicit per-turn level here.
-  // The Codex backend accepts low/medium/high/xhigh; "max" is mapped to xhigh.
+  // The Codex backend accepts low/medium/high/xhigh/max for all configured
+  // GPT models, so pass the level through unchanged.
   const level = request.output_config?.effort;
   if (level && level !== "auto") {
-    if (level === "max") return { effort: "xhigh", summary: "auto" };
-    if (level === "low" || level === "medium" || level === "high" || level === "xhigh") {
+    if (level === "low" || level === "medium" || level === "high" || level === "xhigh" || level === "max") {
       return { effort: level, summary: "auto" };
     }
   }

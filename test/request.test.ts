@@ -121,7 +121,7 @@ test("forwards Claude Code /effort via output_config", () => {
     },
     config,
   ).request;
-  assert.deepEqual(max.reasoning, { effort: "xhigh", summary: "auto" });
+  assert.deepEqual(max.reasoning, { effort: "max", summary: "auto" });
 });
 
 test("maps thinking to reasoning effort and drops temperature", () => {
