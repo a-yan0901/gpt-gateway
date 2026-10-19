@@ -1,5 +1,8 @@
 node_modules/
-dist/
+# The built CLI is committed so `npm install -g github:...` works without a
+# build step (npm's git preparation cannot reliably use devDependencies).
+dist/*
+!dist/cli.js
 *.log
 *.tmp
 .gpt-gateway-test/
