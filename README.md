@@ -19,14 +19,27 @@ Claude Code --(Anthropic API)--> gpt-gateway --(Responses API)--> chatgpt.com/ba
 
 ## 安装
 
+### 从 GitHub 全局安装（推荐）
+
 ```bash
+npm install -g --install-links git+https://github.com/a-yan0901/gpt-gateway.git
+gpt-gateway --version
+```
+
+`--install-links` 会让 npm 打包安装，而不是创建一个指向缓存临时目录的软链
+（npm 11 在 Windows 上直接安装 git 依赖时有这个问题）。
+
+> npm registry 上的 `gpt-gateway` 是另一个无关的 0.0.1 包，因此目前不要用
+> `npm install -g gpt-gateway`，请使用上面的完整 Git 地址。
+
+### 从源码开发
+
+```bash
+git clone https://github.com/a-yan0901/gpt-gateway.git
 cd gpt-gateway
 npm install
 npm run build
-
-# 让 `gpt-gateway` 命令可用（二选一）
-npm link
-# 或者直接用：node dist/cli.js ...
+npm link        # 或 node dist/cli.js ...
 ```
 
 ## 登录
