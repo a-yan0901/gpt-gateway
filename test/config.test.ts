@@ -35,7 +35,8 @@ test("generated settings map tiers without pinning the session model", () => {
   assert.equal(env.ANTHROPIC_DEFAULT_HAIKU_MODEL, "gpt-6-luna");
   assert.equal(env.ANTHROPIC_DEFAULT_FABLE_MODEL, "gpt-6-astra");
   assert.equal(env.CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY, "1");
-  assert.equal(env.CLAUDE_CODE_SUBAGENT_MODEL, "gpt-6.1-sol");
+  assert.equal(env.CLAUDE_CODE_SUBAGENT_MODEL, "inherit");
+  assert.equal(env.CLAUDE_CODE_SUBAGENT_MODEL_FORCE, "1");
   assert.equal(env.ANTHROPIC_SMALL_FAST_MODEL, "gpt-6-luna");
   assert.equal(env.ANTHROPIC_BASE_URL, "http://127.0.0.1:1234");
 });

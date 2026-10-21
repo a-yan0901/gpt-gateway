@@ -405,6 +405,7 @@ async function cmdClaude(args: string[]): Promise<number> {
   delete childEnv.ANTHROPIC_MODEL;
   delete childEnv.ANTHROPIC_CUSTOM_MODEL_OPTION;
   delete childEnv.CLAUDE_CODE_SUBAGENT_MODEL;
+  delete childEnv.CLAUDE_CODE_SUBAGENT_MODEL_FORCE;
   delete childEnv.ANTHROPIC_SMALL_FAST_MODEL;
   delete childEnv.OMC_SUBAGENT_MODEL;
   Object.assign(childEnv, settingsEnv);
