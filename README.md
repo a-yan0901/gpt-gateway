@@ -128,9 +128,12 @@ gpt-gateway doctor --live   # 自检并发一条真实请求
 （`CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY=1`），所以 `/model` 列表里也能直接选
 `gpt-6.1-sol` / `gpt-6-luna` / `gpt-6-astra`。用 `/model` 保存的默认值对下次启动同样生效。
 
-子代理（Task/Agent）默认**跟随主会话模型**：wrapper 设置了
-`CLAUDE_CODE_SUBAGENT_MODEL=inherit` 并开启 FORCE，因此 agent 定义里写死的模型、
-原供应商遗留的模型名都不会覆盖它。后台/轻量任务单独使用 `haiku` 映射。
+子代理（Task/Agent）与主会话共用同一张档位映射表。agent 定义里写
+`model: opus` / `sonnet` / `haiku` / `fable` 时，会按上表解析成相同的 GPT 模型，
+例如子代理 `model: haiku` → `gpt-6-luna`。wrapper 设置
+`CLAUDE_CODE_SUBAGENT_MODEL=inherit` 只是清掉原供应商遗留的默认值；没有指定模型的
+子代理才回退到主会话模型，不会强制所有子代理都用同一个模型。后台/轻量任务单独使用
+`haiku` 映射。
 
 修改 `~/.gpt-gateway/config.json` 的 `models` 字段，或用环境变量：
 
@@ -221,20 +224,22 @@ Claude Code 会把当前强度放在请求的 `output_config.effort` 字段里�
 
 说明子代理没有使用你当前选择的 GPT 模型，而是从用户 settings、agent frontmatter 或
 `CLAUDE_CODE_SUBAGENT_MODEL` / `ANTHROPIC_SMALL_FAST_MODEL` 继承了原供应商的模型名，
-但 base URL 仍指向网关。wrapper 现在统一了子代理模型：
+但 base URL 仍指向网关。
+
+子代理和主会话共用同一张档位表：
 
 ```json
-"CLAUDE_CODE_SUBAGENT_MODEL": "inherit",
-"CLAUDE_CODE_SUBAGENT_MODEL_FORCE": "1"
+"CLAUDE_CODE_SUBAGENT_MODEL": "inherit"
 ```
 
-即所有子代理都跟随主会话当前模型（`/model` 切换后也同步），并覆盖 agent 定义里的
-`model` 字段。后台/轻量任务仍使用 `haiku` 映射（默认 `gpt-6-luna`）。
+`inherit` 等价于未设置，只清除原供应商遗留的子代理默认值；agent 定义中的
+`model: sonnet` / `haiku` 等仍按同一张表解析，不会被强制成主会话模型。
 
 如果仍出现：
 
-1. 确认 Claude Code >= 2.1.257（`CLAUDE_CODE_SUBAGENT_MODEL_FORCE` 所需版本）；
-2. 检查项目或插件是否通过 `agent.spawn` hook 指定了模型；
+1. 检查自定义 agent 定义是否写死了具体模型名（如 `model: deepseek-v4-flash`），
+   应改成档位别名 `opus` / `sonnet` / `haiku` / `fable` 或 `gpt-6-*`；
+2. 检查项目、插件或 `agent.spawn` hook 是否显式指定了非 GPT 模型；
 3. 重启 `gpt-gateway claude`，让新的 wrapper 设置生效。
 
 **自定义 endpoint 被 Claude Code 安全策略拦截**

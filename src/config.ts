@@ -236,12 +236,11 @@ export function buildClaudeSettings(config: GatewayConfig, port = config.port): 
       // the model picker and status line stay consistent.
       ANTHROPIC_MODEL: "",
       ANTHROPIC_CUSTOM_MODEL_OPTION: config.models.opus,
-      // Subagents follow the main conversation's model. "inherit" shadows any
-// model name inherited from another provider, and FORCE makes this win over
-// agent definitions and per-invocation overrides. Background/lightweight
-// tasks keep using the haiku mapping unless the user changes it.
+      // Subagents resolve their tier through the same *_DEFAULT_*_MODEL table as
+      // the main conversation. "inherit" only shadows a model left over from
+      // another provider; it is the fallback when an agent assigns no model.
+      // It does not force every subagent onto the main model.
       CLAUDE_CODE_SUBAGENT_MODEL: "inherit",
-      CLAUDE_CODE_SUBAGENT_MODEL_FORCE: "1",
       ANTHROPIC_SMALL_FAST_MODEL: config.models.haiku,
       // Let the /model picker list every model the gateway serves, so users can
       // switch between them without hand-editing settings.
