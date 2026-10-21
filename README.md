@@ -213,6 +213,18 @@ Claude Code 会把当前强度放在请求的 `output_config.effort` 字段里�
 重新启动一次 `gpt-gateway claude` 后即可正常切换。状态栏本身只在下一条助手消息等
 时机刷新，执行 `/model` 后需要发一条消息才会更新。
 
+**任务进行中，某个子代理/后台任务报 `deepseek-v4-flash` / 原供应商模型不支持**
+
+说明子代理没有使用你当前选择的 GPT 模型，而是从用户 settings、agent frontmatter 或
+`CLAUDE_CODE_SUBAGENT_MODEL` / `ANTHROPIC_SMALL_FAST_MODEL` 继承了原供应商的模型名，
+但 base URL 仍指向网关。wrapper 现在会显式设置这两个变量为 GPT 模型。如果仍出现：
+
+1. 检查自定义 agent 定义里是否写死了 `model: deepseek-v4-flash`，改成层级别名
+   （`sonnet` / `haiku` / `opus`）或 `gpt-6-*`；
+2. 检查 `~/.claude/settings.json` 和项目 `.claude/settings.json` 的 `env` 是否设置了
+   上述变量；
+3. 重启 `gpt-gateway claude`，让新的 wrapper 设置生效。
+
 **自定义 endpoint 被 Claude Code 安全策略拦截**
 
 确保是通过 `gpt-gateway claude`（或 `claude --settings ~/.gpt-gateway/claude-settings.json`）启动。

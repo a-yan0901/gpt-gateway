@@ -236,6 +236,11 @@ export function buildClaudeSettings(config: GatewayConfig, port = config.port): 
       // the model picker and status line stay consistent.
       ANTHROPIC_MODEL: "",
       ANTHROPIC_CUSTOM_MODEL_OPTION: config.models.opus,
+      // Background tasks and subagents may otherwise inherit a model name from
+      // the user's original provider (for example deepseek-v4-flash) while
+      // still using this gateway's base URL. Pin both to GPT models.
+      CLAUDE_CODE_SUBAGENT_MODEL: config.models.sonnet,
+      ANTHROPIC_SMALL_FAST_MODEL: config.models.haiku,
       // Let the /model picker list every model the gateway serves, so users can
       // switch between them without hand-editing settings.
       CLAUDE_CODE_ENABLE_GATEWAY_MODEL_DISCOVERY: "1",

@@ -404,6 +404,9 @@ async function cmdClaude(args: string[]): Promise<number> {
   delete childEnv.ANTHROPIC_API_KEY;
   delete childEnv.ANTHROPIC_MODEL;
   delete childEnv.ANTHROPIC_CUSTOM_MODEL_OPTION;
+  delete childEnv.CLAUDE_CODE_SUBAGENT_MODEL;
+  delete childEnv.ANTHROPIC_SMALL_FAST_MODEL;
+  delete childEnv.OMC_SUBAGENT_MODEL;
   Object.assign(childEnv, settingsEnv);
   // Do not let a nested Claude Code session reuse the parent's session plumbing.
   delete childEnv.CLAUDECODE;
