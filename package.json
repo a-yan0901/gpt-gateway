@@ -2,6 +2,7 @@
   "name": "gpt-gateway",
   "version": "0.1.0",
   "description": "Anthropic Messages API gateway backed by a ChatGPT subscription (Codex Responses API)",
+  "license": "MIT",
   "type": "module",
   "bin": {
     "gpt-gateway": "dist/cli.js"
